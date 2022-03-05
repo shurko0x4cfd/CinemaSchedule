@@ -2,23 +2,10 @@
 
 namespace app\models;
 
-use Yii;
 use yii\base\Model;
-use yii\db\ActiveRecord;
+use app\tools\Films;
 
 
-class Films extends ActiveRecord
-{
-    public static function tableName()
-    {
-        return 'films';
-    }
-}
-
-
-/**
- * ContactForm is the model behind the contact form.
- */
 class EditfilmsForm extends Model
 {
     public $list;
@@ -28,7 +15,7 @@ class EditfilmsForm extends Model
     public $description;
     public $duration;
     public $limits;
-    public $chckbox;
+    public $checkbox_remove;
 
     function __construct()
     {
@@ -39,7 +26,6 @@ class EditfilmsForm extends Model
     {
         $arr = ['0' => 'Create new'];
         $f1 = Films::find()->select('id, name')->asArray()->all();
-        $cnt = count($f1);
 
         foreach ($f1 as $i) {
             $arr[(string)$i['id']] = $i['name'];
@@ -57,7 +43,7 @@ class EditfilmsForm extends Model
         return [
             [['list', 'name', 'image', 'description', 'duration', 'limits'], 'required'],
             [['image'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg'],
-            [['chckbox'], 'string']
+            [['checkbox_remove'], 'string']
         ];
     }
 
@@ -74,9 +60,9 @@ class EditfilmsForm extends Model
     public function editfilms()
     {
 
-        if ($this->chckbox != 'uncheck' and $this->list != '0') {
+        if ($this->checkbox_remove != 'uncheck' and $this->list != '0') {
             $f2 = Films::findOne($this->list)->delete();
-            $this->chckbox = false;
+            $this->checkbox_remove = false;
             $this->film_list_array = $this->fetch_film_list_array();
             return true;
         }
@@ -85,29 +71,21 @@ class EditfilmsForm extends Model
             $imgpath = 'images/' . $this->image->baseName . '.' . $this->image->extension;
 
             if ($this->list == '0') {
-                //$this->current = $this->list;
                 $this->image->saveAs($imgpath);
 
                 $f2 = new Films;
-
-                $f2->name = $this->name;
-                $f2->photo = $imgpath;
-                $f2->description = $this->description;
-                $f2->duration = $this->duration;
-                $f2->limits = $this->limits;
-
-                $f2->save();
             } else {
                 $f2 = Films::findOne($this->list);
-
-                $f2->name = $this->name;
-                $f2->photo = $imgpath;
-                $f2->description = $this->description;
-                $f2->duration = $this->duration;
-                $f2->limits = $this->limits;
-
-                $f2->save();
             }
+
+            $f2->name = $this->name;
+            $f2->photo = $imgpath;
+            $f2->description = $this->description;
+            $f2->duration = $this->duration;
+            $f2->limits = $this->limits;
+
+            $f2->save();
+
 
             $this->film_list_array = $this->fetch_film_list_array();
             return true;

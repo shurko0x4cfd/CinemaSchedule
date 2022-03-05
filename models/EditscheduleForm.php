@@ -4,46 +4,12 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
-use yii\db\ActiveRecord;
+use app\tools\Schedule;
+use app\tools\Films;
 
 
 
-class Schedule extends ActiveRecord
-{
-    public static function tableName()
-    {
-        return 'schedule';
-    }
-}
 
-class Films extends ActiveRecord
-{
-    public static function tableName()
-    {
-        return 'films';
-    }
-}
-
-class FFLA extends Model
-{
-    public function fetch_film_list_array()
-    {
-        $arr = [];
-        $f1 = Films::find()->select('id, name')->asArray()->all();
-        $cnt = count($f1);
-
-        foreach ($f1 as $i) {
-            $arr[(string)$i['id']] = $i['name'];
-        }
-
-        return $arr;
-    }
-}
-
-
-/**
- * ContactForm is the model behind the contact form.
- */
 class EditscheduleForm extends Model
 {
     public $list;
@@ -55,38 +21,32 @@ class EditscheduleForm extends Model
     public $datetime;
     public $price;
 
-    public $chckbox;
-
-    public $formatter;
+    public $checkbox_remove;
 
     public $too_near;
 
+
     function __construct()
     {
-        $this->chckbox = 'uncheck';
-        $this->formatter = \Yii::$app->formatter;
+        // $this->checkbox_remove = 'uncheck';
         $this->session_list_array = $this->fetch_session_list_array();
-        $this->film_list_array = $this->fetch_film_list_array();
-        // $this->datetime = $this->formatter->asDatetime(4567, 'yyyy-mm-dd hh:mm:ss'); // 2022-03-04 00:00:00
+        $this->film_list_array = Films::fetch_film_list_array();
     }
+
 
     function fetch_session_list_array()
     {
         $res = ['0' => 'Create new session'];
         $f1 = Schedule::find()->select('id, film')->asArray()->all();
-        $film_list = $this->fetch_film_list_array();
+        $film_list = Films::fetch_film_list_array();
 
+        // to fix - fall down if film removed
         foreach ($f1 as $i) {
             $film_id = $i['film'];
             $res[(string)$i['id']] = $i['id'] . ' - ' . $film_list[$film_id];
         }
 
         return $res;
-    }
-
-    function fetch_film_list_array()
-    {
-        return (new FFLA)->fetch_film_list_array();
     }
 
 
@@ -97,10 +57,11 @@ class EditscheduleForm extends Model
     {
         return [
             [['list', 'film', 'datetime', 'price'], 'required'],
-            [['chckbox'], 'string'],
+            [['checkbox_remove'], 'string'],
             [['datetime'], 'string']
         ];
     }
+
 
     /**
      * @return array customized attribute labels
@@ -112,16 +73,18 @@ class EditscheduleForm extends Model
         ];
     }
 
-    private function check_gap($datetime)
+    private function check_gap($datetime, $tablename)
     {
-        $near_count  = (new \yii\db\Query())
+        /* $near_count  = (new \yii\db\Query())
             ->select(['id'])
             ->from(['schedule'])
             ->where('abs(time - ' . strtotime("$datetime GMT") . ') < 108000')
             ->groupBy('id')
-            ->count('id');
+            ->count('id'); */
 
-        $near_count = Yii::$app->db->createCommand('SELECT distinct COUNT(id) FROM schedule where abs(time - ' . strtotime("$datetime GMT") . ') < 1800')
+        $near_count = Yii::$app
+            ->db
+            ->createCommand('SELECT distinct COUNT(id) FROM ' . $tablename . ' where abs(time - ' . strtotime("$datetime GMT") . ') < 1800')
             ->queryScalar();
 
         return $near_count > 0;
@@ -130,11 +93,11 @@ class EditscheduleForm extends Model
     public function editschedule()
     {
 
-        if ($this->chckbox != 'uncheck' and $this->list != '0') {
+        if ($this->checkbox_remove != 'uncheck' and $this->list != '0') {
             $f2 = Schedule::findOne($this->list)->delete();
-            $this->chckbox = false;
+            $this->checkbox_remove = false;
             $this->session_list_array = $this->fetch_session_list_array();
-            $this->film_list_array = $this->fetch_film_list_array();
+            $this->film_list_array = Films::fetch_film_list_array();
             return true;
         }
 
@@ -142,7 +105,7 @@ class EditscheduleForm extends Model
             $datetime = $this->datetime;
 
             if ($this->list == '0') {
-                $too_near = $this->check_gap($datetime);
+                $too_near = $this->check_gap($datetime, 'schedule');
 
                 if ($too_near) {
                     $this->too_near = 'Too near! Choose a session no closer than 30m to another';
@@ -151,28 +114,20 @@ class EditscheduleForm extends Model
                     $this->too_near = '';
                 }
 
-
                 $f2 = new Schedule;
-
-                $f2->film = $this->film;
-
-                $f2->time = strtotime("$datetime GMT");
-                $f2->price = $this->price;
-
-                $f2->save();
             } else {
                 $f2 = Schedule::findOne($this->list);
-
-                $f2->film = $this->film;
-
-                $f2->time = strtotime("$datetime GMT");
-                $f2->price = $this->price;
-
-                $f2->save();
             }
 
+            $f2->film = $this->film;
+
+            $f2->time = strtotime("$datetime GMT");
+            $f2->price = $this->price;
+
+            $f2->save();
+
             $this->session_list_array = $this->fetch_session_list_array();
-            $this->film_list_array = $this->fetch_film_list_array();
+            $this->film_list_array = Films::fetch_film_list_array();
 
             return true;
         } else {

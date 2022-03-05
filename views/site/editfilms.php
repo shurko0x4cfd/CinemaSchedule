@@ -6,7 +6,6 @@
 
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
-use yii\captcha\Captcha;
 
 
 $this->title = 'Edit or create film items';
@@ -37,7 +36,7 @@ $this->title = 'Edit or create film items';
 
             <?= $form->field($model, 'limits')->textInput(['type' => 'number'])->label('Age restrictions'); ?>
 
-            <?= $form->field($model, 'chckbox')->checkbox(['uncheck' => 'uncheck'])->label('Remove it'); ?>
+            <?= $form->field($model, 'checkbox_remove')->checkbox(['uncheck' => 'uncheck'])->label('Remove it'); ?>
 
             <div class="form-group">
                 <?= Html::submitButton('Update', ['class' => 'btn btn-primary']); ?>

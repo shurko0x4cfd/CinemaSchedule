@@ -33,7 +33,7 @@ $this->title = 'Edit or create schedule items';
 
             <?= $form->field($model, 'price')->textInput(['type' => 'number'])->label('Price'); ?>
 
-            <?= $form->field($model, 'chckbox')->checkbox(['uncheck' => 'uncheck'])->label('Remove it'); ?>
+            <?= $form->field($model, 'checkbox_remove')->checkbox(['uncheck' => 'uncheck'])->label('Remove it'); ?>
 
             <div class="form-group">
                 <?= Html::submitButton('Update', ['class' => 'btn btn-primary']); ?>

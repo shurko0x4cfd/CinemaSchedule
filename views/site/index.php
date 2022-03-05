@@ -13,7 +13,7 @@ $this->title = 'Session list';
 
                 <?php
                 $items = $model->session_items;
-                $formatter = \Yii::$app->formatter;
+                $formatter = Yii::$app->formatter;
 
                 foreach ($items as $item) {
                     print '<div style="margin-top: 100px">';
