@@ -19,19 +19,7 @@ class EditfilmsForm extends Model
 
     function __construct()
     {
-        $this->film_list_array = $this->fetch_film_list_array();
-    }
-
-    function fetch_film_list_array()
-    {
-        $arr = ['0' => 'Create new'];
-        $f1 = Films::find()->select('id, name')->asArray()->all();
-
-        foreach ($f1 as $i) {
-            $arr[(string)$i['id']] = $i['name'];
-        }
-
-        return $arr;
+        $this->film_list_array = Films::fetch_film_list_array();
     }
 
 

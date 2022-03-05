@@ -28,7 +28,7 @@ class EditscheduleForm extends Model
 
     function __construct()
     {
-        // $this->checkbox_remove = 'uncheck';
+        $this->checkbox_remove = 'uncheck';
         $this->session_list_array = $this->fetch_session_list_array();
         $this->film_list_array = Films::fetch_film_list_array();
     }
