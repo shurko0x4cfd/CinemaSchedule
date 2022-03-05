@@ -19,7 +19,7 @@ class Index extends Model
             ->select(['name', 'photo', 'description', 'duration', 'limits', 'time', 'price'])
             ->from(['films', 'schedule'])
             ->where('films.id = schedule.film')
-            ->orderBy(['time' => SORT_DESC])
+            ->orderBy(['time' => SORT_ASC])
             ->all();
 
         return $result;
