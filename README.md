@@ -6,3 +6,5 @@ id int primary key auto_increment unique, name varchar(255) not null, photo varc
 
 schedule: 
 id int primary key auto_increment unique, film int not null, time int not null, price int not null
+
+Вход администратора по "секретному" адресу http://localhost/index.php?r=site%2Flogin. На пользовательской странице ссылки нет.
