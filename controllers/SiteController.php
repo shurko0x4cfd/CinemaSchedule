@@ -8,7 +8,7 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
-use app\models\ContactForm;
+// use app\models\ContactForm;
 
 use yii\web\UploadedFile;
 use app\models\EditfilmsForm;
@@ -135,18 +135,12 @@ class SiteController extends Controller
     }
 
 
-
-
-
-
-
-
     /**
      * Displays contact page.
      *
      * @return Response|string
      */
-    public function actionContact()
+/*    public function actionContact()
     {
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
@@ -157,15 +151,16 @@ class SiteController extends Controller
         return $this->render('contact', [
             'model' => $model,
         ]);
-    }
+    } */
 
     /**
      * Displays about page.
      *
      * @return string
      */
-    public function actionAbout()
+ /*   public function actionAbout()
     {
         return $this->render('about');
-    }
+    } */
+
 }

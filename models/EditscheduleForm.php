@@ -26,15 +26,16 @@ class EditscheduleForm extends Model
     public $too_near;
 
 
-    function __construct()
+    public function __construct()
     {
         $this->checkbox_remove = 'uncheck';
+        $this->datetime = '2022-- ::';
         $this->session_list_array = $this->fetch_session_list_array();
         $this->film_list_array = Films::fetch_film_list_array();
     }
 
 
-    function fetch_session_list_array()
+    private function fetch_session_list_array()
     {
         $res = ['0' => 'Create new session'];
         $f1 = Schedule::find()->select('id, film')->asArray()->all();
@@ -120,7 +121,6 @@ class EditscheduleForm extends Model
             }
 
             $f2->film = $this->film;
-
             $f2->time = strtotime("$datetime GMT");
             $f2->price = $this->price;
 
