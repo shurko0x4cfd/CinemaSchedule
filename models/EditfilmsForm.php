@@ -52,7 +52,7 @@ class EditfilmsForm extends Model
         if ($this->checkbox_remove != 'uncheck' and $this->list != '0') {
             Films::findOne($this->list)->delete();
             $this->checkbox_remove = false;
-            $this->film_list_array = Films::fetch_film_list_array(['0' => 'Create new film item']);
+            $this->film_list_array = Films::fetch_film_list_array(['0' => 'Create a new film item']);
             return true;
         }
 

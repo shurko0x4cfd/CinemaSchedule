@@ -38,14 +38,14 @@ class EditscheduleForm extends Model
 
     private function fetch_session_list_array()
     {
-        $res = ['0' => 'Create new session'];
-        $f1 = Schedule::find()->select('id, film')->asArray()->all();
+        $res = ['0' => 'Create a new session'];
+        $f1 = Schedule::find()->select('id, film, time')->asArray()->all();
         $film_list = Films::fetch_film_list_array();
 
         foreach ($f1 as $i) {
             $film_id = $i['film'];
             if (array_key_exists($film_id, $film_list)) {
-                $res[(string)$i['id']] = $i['id'] . ' - ' . $film_list[$film_id];
+                $res[(string)$i['id']] = $i['id'] . ' - ' . $film_list[$film_id] . ' ' . date('y-m-d h:m', $i['time']);
             } else {
                 $this->remove_schedule_item($i['id']);
             }
