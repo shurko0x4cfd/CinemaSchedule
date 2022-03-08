@@ -20,7 +20,7 @@ class EditfilmsForm extends Model
     public function __construct()
     {
         $this->checkbox_remove = 'uncheck';
-        $this->film_list_array = Films::fetch_film_list_array();
+        $this->film_list_array = Films::fetch_film_list_array(['0' => 'Create new film item']);
     }
 
 
@@ -50,9 +50,9 @@ class EditfilmsForm extends Model
     {
 
         if ($this->checkbox_remove != 'uncheck' and $this->list != '0') {
-            $f2 = Films::findOne($this->list)->delete();
+            Films::findOne($this->list)->delete();
             $this->checkbox_remove = false;
-            $this->film_list_array = Films::fetch_film_list_array();
+            $this->film_list_array = Films::fetch_film_list_array(['0' => 'Create new film item']);
             return true;
         }
 
@@ -76,7 +76,7 @@ class EditfilmsForm extends Model
             $f2->save();
 
 
-            $this->film_list_array = Films::fetch_film_list_array();
+            $this->film_list_array = Films::fetch_film_list_array(['0' => 'Create new film item']);
             return true;
         } else {
             return false;

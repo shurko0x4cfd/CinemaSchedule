@@ -29,7 +29,8 @@ class EditscheduleForm extends Model
     public function __construct()
     {
         $this->checkbox_remove = 'uncheck';
-        $this->datetime = '2022-- ::';
+        $this->list = '0';
+        $this->datetime = date('Y-m-d h:m:s');
         $this->session_list_array = $this->fetch_session_list_array();
         $this->film_list_array = Films::fetch_film_list_array();
     }
@@ -41,10 +42,13 @@ class EditscheduleForm extends Model
         $f1 = Schedule::find()->select('id, film')->asArray()->all();
         $film_list = Films::fetch_film_list_array();
 
-        // to fix - fall down if film removed
         foreach ($f1 as $i) {
             $film_id = $i['film'];
-            $res[(string)$i['id']] = $i['id'] . ' - ' . $film_list[$film_id];
+            if (array_key_exists($film_id, $film_list)) {
+                $res[(string)$i['id']] = $i['id'] . ' - ' . $film_list[$film_id];
+            } else {
+                $this->remove_schedule_item($i['id']);
+            }
         }
 
         return $res;
@@ -91,16 +95,26 @@ class EditscheduleForm extends Model
         return $near_count > 0;
     }
 
+
+    private function remove_schedule_item($primary_key)
+    {
+        $f2 = Schedule::findOne($primary_key)->delete();
+        $this->checkbox_remove = 'uncheck';
+        $this->session_list_array = $this->fetch_session_list_array();
+        $this->film_list_array = Films::fetch_film_list_array();
+        return true;
+    }
+
+
     public function editschedule()
     {
 
         if ($this->checkbox_remove != 'uncheck' and $this->list != '0') {
-            $f2 = Schedule::findOne($this->list)->delete();
-            $this->checkbox_remove = false;
-            $this->session_list_array = $this->fetch_session_list_array();
-            $this->film_list_array = Films::fetch_film_list_array();
-            return true;
+            return $this->remove_schedule_item($this->list);
         }
+
+        // Delete schedule items corresponding to deleted movies
+        $this->fetch_session_list_array();
 
         if ($this->validate()) {
             $datetime = $this->datetime;
@@ -118,6 +132,10 @@ class EditscheduleForm extends Model
                 $f2 = new Schedule;
             } else {
                 $f2 = Schedule::findOne($this->list);
+            }
+
+            if (!$f2) {
+                return false;
             }
 
             $f2->film = $this->film;

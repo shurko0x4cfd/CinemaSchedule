@@ -12,5 +12,3 @@ class Schedule extends ActiveRecord
         return 'schedule';
     }
 }
-
-?>

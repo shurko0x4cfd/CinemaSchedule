@@ -8,12 +8,12 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
-// use app\models\ContactForm;
 
 use yii\web\UploadedFile;
 use app\models\EditfilmsForm;
 use app\models\EditscheduleForm;
 use app\models\Index;
+
 
 class SiteController extends Controller
 {

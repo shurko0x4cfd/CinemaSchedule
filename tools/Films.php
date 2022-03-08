@@ -12,15 +12,14 @@ class Films extends ActiveRecord
         return 'films';
     }
 
-    public static function fetch_film_list_array()
+    public static function fetch_film_list_array($result = [])
     {
-        $arr = [];
-        $f1 = Films::find()->select('id, name')->asArray()->all();
+        $films = Films::find()->select('id, name')->asArray()->all();
 
-        foreach ($f1 as $i) {
-            $arr[(string)$i['id']] = $i['name'];
+        foreach ($films as $i) {
+            $result[(string)$i['id']] = (string)$i['id'] . ' - ' . $i['name'];
         }
 
-        return $arr;
+        return $result;
     }
 }

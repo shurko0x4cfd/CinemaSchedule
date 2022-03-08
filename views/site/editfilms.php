@@ -2,7 +2,6 @@
 
 /** @var yii\web\View $this */
 /** @var yii\bootstrap4\ActiveForm $form */
-/** @var app\models\ContactForm $model */
 
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
@@ -11,11 +10,11 @@ use yii\bootstrap4\Html;
 $this->title = 'Edit or create film items';
 /* $this->params['breadcrumbs'][] = $this->title; */
 ?>
+
 <div class="site-contact">
     <h1>Edit films</h1>
 
-    <p> You can edit any film item, remove or create a new one
-    </p>
+    <p> You can edit any film item, remove or create a new one </p>
 
     <div class="row">
         <div class="col-lg-5">
@@ -24,7 +23,7 @@ $this->title = 'Edit or create film items';
 
             <?= $form
                 ->field($model, 'list')
-                ->dropdownList($model->film_list_array,  ['options' =>[ $model->list => ['Selected' => true]]]); ?>
+                ->dropdownList($model->film_list_array,  ['options' => [$model->list => ['Selected' => true]]]); ?>
 
             <?= $form->field($model, 'name')->textInput(['autofocus' => true]); ?>
 
@@ -46,6 +45,4 @@ $this->title = 'Edit or create film items';
 
         </div>
     </div>
-
-
 </div>
