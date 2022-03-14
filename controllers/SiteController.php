@@ -10,8 +10,8 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 
 use yii\web\UploadedFile;
-use app\models\EditfilmsForm;
-use app\models\EditscheduleForm;
+use app\models\EditFilmsForm;
+use app\models\EditScheduleForm;
 use app\models\Index;
 
 
@@ -52,10 +52,10 @@ class SiteController extends Controller
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
-            'captcha' => [
+            /* 'captcha' => [
                 'class' => 'yii\captcha\CaptchaAction',
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
+            ] */
         ];
     }
 
@@ -107,9 +107,9 @@ class SiteController extends Controller
     }
 
 
-    public function actionEditschedule()
+    public function actionEditSchedule()
     {
-        $model = new EditscheduleForm();
+        $model = new EditScheduleForm();
         $model->load(Yii::$app->request->post());
         //return $this->refresh();
 
@@ -120,9 +120,9 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionEditfilms()
+    public function actionEditFilms()
     {
-        $model = new EditfilmsForm();
+        $model = new EditFilmsForm();
 
         if ($model->load(Yii::$app->request->post())) {
             $model->image = UploadedFile::getInstance($model, 'image');

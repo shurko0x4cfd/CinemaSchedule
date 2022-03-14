@@ -4,7 +4,7 @@
 /** @var string $content */
 
 use app\assets\AppAsset;
-use app\widgets\Alert;
+// use app\widgets\Alert;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
@@ -40,8 +40,8 @@ AppAsset::register($this);
         echo Nav::widget([
             'options' => ['class' => 'navbar-nav'],
             'items' => [
-                $is_admin ? (['label' => 'Edit films', 'url' => ['/site/editfilms']]) : (''),
-                $is_admin ? (['label' => 'Edit schedule', 'url' => ['/site/editschedule']]) : (''),
+                $is_admin ? (['label' => 'Edit films', 'url' => ['/site/edit-films']]) : (''),
+                $is_admin ? (['label' => 'Edit schedule', 'url' => ['/site/edit-schedule']]) : (''),
                 $is_admin ? (['label' => 'View result', 'url' => ['/site/index']]) : (''),
 
                 $is_admin ? ('<li>'
