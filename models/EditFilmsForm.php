@@ -11,6 +11,7 @@ class EditFilmsForm extends Model
     public $list;
     public $film_list_array;
     public $name;
+    public $imgpath;
     public $image;
     public $description;
     public $duration;
@@ -30,7 +31,8 @@ class EditFilmsForm extends Model
     public function rules()
     {
         return [
-            [['list', 'name', 'image', 'description', 'duration', 'limits'], 'required'],
+            [['list', 'name', 'imgpath', 'image', 'description', 'duration', 'limits'], 'required'],
+            [['imgpath'], 'string'],
             [['image'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg'],
             [['checkbox_remove'], 'string']
         ];
@@ -39,42 +41,45 @@ class EditFilmsForm extends Model
     /**
      * @return array customized attribute labels
      */
-    public function attributeLabels()
+    /*public function attributeLabels()
     {
         return [
             'as' => 'df',
         ];
+    }*/
+
+
+    public function is_should_remove()
+    {
+        return $this->checkbox_remove != 'uncheck' and $this->list != '0';
     }
 
-    public function editfilms()
-    {
 
-        if ($this->checkbox_remove != 'uncheck' and $this->list != '0') {
+    public function remove_film()
+    {
             Films::findOne($this->list)->delete();
             $this->checkbox_remove = false;
             $this->film_list_array = Films::fetch_film_list_array(['0' => 'Create a new film item']);
             return true;
-        }
+    }
 
+
+    public function editfilms()
+    {
         if ($this->validate()) {
-            $imgpath = 'images/' . $this->image->baseName . '.' . $this->image->extension;
-
             if ($this->list == '0') {
-                $this->image->saveAs($imgpath);
-
                 $f2 = new Films;
             } else {
                 $f2 = Films::findOne($this->list);
             }
 
             $f2->name = $this->name;
-            $f2->photo = $imgpath;
+            $f2->photo = $this->imgpath;
             $f2->description = $this->description;
             $f2->duration = $this->duration;
             $f2->limits = $this->limits;
 
             $f2->save();
-
 
             $this->film_list_array = Films::fetch_film_list_array(['0' => 'Create new film item']);
             return true;

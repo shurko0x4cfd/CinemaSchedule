@@ -11,6 +11,7 @@ use app\models\LoginForm;
 
 use yii\web\UploadedFile;
 use app\models\EditFilmsForm;
+use app\models\HandleDwlStuff;
 use app\models\EditScheduleForm;
 use app\models\Index;
 
@@ -43,6 +44,7 @@ class SiteController extends Controller
         ];
     }
 
+
     /**
      * {@inheritdoc}
      */
@@ -59,6 +61,7 @@ class SiteController extends Controller
         ];
     }
 
+
     /**
      * Displays homepage.
      *
@@ -71,6 +74,7 @@ class SiteController extends Controller
 
         return $this->render('index', ['model' => $model]);
     }
+
 
     /**
      * Login action.
@@ -93,6 +97,7 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
 
     /**
      * Logout action.
@@ -120,16 +125,24 @@ class SiteController extends Controller
         ]);
     }
 
+
     public function actionEditFilms()
     {
         $model = new EditFilmsForm();
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->image = UploadedFile::getInstance($model, 'image');
+            if ($model->is_should_remove()) {
+                $model->remove_film();
+            } else {
+                $img_handler = new HandleDwlStuff;
+                $img_handler->image   = $model->image   = $image = UploadedFile::getInstance($model, 'image');
+                $img_handler->imgpath = $model->imgpath = 'images/' . $image->baseName . '.' . $image->extension;
 
-            $model->editfilms();
-
-            return $this->render('editfilms', ['model' => $model]);
+                if ($img_handler->validate() and $model->validate()) {
+                    $model->editfilms();
+                    $img_handler->store_image();
+                }
+            }
         }
         return $this->render('editfilms', ['model' => $model]);
     }
@@ -140,7 +153,7 @@ class SiteController extends Controller
      *
      * @return Response|string
      */
-/*    public function actionContact()
+    /*    public function actionContact()
     {
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
@@ -158,9 +171,8 @@ class SiteController extends Controller
      *
      * @return string
      */
- /*   public function actionAbout()
+    /*   public function actionAbout()
     {
         return $this->render('about');
     } */
-
 }
